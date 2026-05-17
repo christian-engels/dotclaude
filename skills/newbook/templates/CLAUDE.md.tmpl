@@ -1,0 +1,51 @@
+# CLAUDE.md — __TITLE__
+
+## What this project is
+
+A book in progress. Working title: **__TITLE__**. Slug: `__SLUG__`.
+
+## Source of truth
+
+- Decks (if any) listed in `decks/README.md` are **storyboards**. They are not the source of prose.
+- The book chapters are the **prose**. Do not auto-generate full chapter prose without review. Stubs and outlines are fine; finished prose requires explicit go-ahead.
+
+## Voice cast
+
+The book speaks through named voices in `\voice{<name>}{<text>}` sidebars. Each voice has a fixed color (defined in `style/__SLUG__.sty`).
+
+Edit this table to fit the book's argument:
+
+| Voice | Color | When to use |
+|---|---|---|
+| Fisher | slate | (placeholder) |
+| Ricardo / Thompson | warmgray | (placeholder) |
+| Skeptic | charcoal | (placeholder) |
+| Manager | ocean | (placeholder) |
+| IC | forest | (placeholder) |
+| Verifier | crimson | (placeholder) |
+
+## Lineage commitments
+
+(Replace with this book's specific lineage rules.)
+
+## Do-not list
+
+- Do **not** treat any deck as the source of truth for prose. Decks are storyboards; the book is prose.
+- Do **not** auto-generate full chapter prose without review.
+- Do **not** migrate citations into the body without verifying with `/bibcheck`.
+
+## Repeated tasks
+
+- `/bibcheck bibliography/__SLUG__.bib` — verify entries before any chapter check-in
+- `/referee2` — once a draft chapter exists, get a fresh-agent audit
+- `/blindspot` — on every figure or table the book introduces
+
+## Compile
+
+```bash
+pdflatex book.tex && biber book && pdflatex book.tex && pdflatex book.tex
+```
+
+## Status
+
+Skeleton scaffolded by `/newbook` on __DATE__. Chapters are stubs. Prose has not yet been drafted.

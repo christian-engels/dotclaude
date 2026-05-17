@@ -1,0 +1,35 @@
+# __TITLE__
+
+A book in progress, by __AUTHOR__.
+
+## Status
+
+Skeleton. The chapters compile and the design system works; prose has not yet been drafted.
+
+## How to compile
+
+```bash
+pdflatex book.tex
+biber book
+pdflatex book.tex
+pdflatex book.tex
+```
+
+The book uses `memoir` as its document class with a custom style at `style/__SLUG__.sty`. The style provides:
+
+- Palatino body (`mathpazo`)
+- Reclaimed Gov 2001 palette (charcoal, slate, ocean, forest, crimson, warmgray, lightbg)
+- A `\voice{<name>}{<text>}` macro for named voices
+- `\sidenote{}` for margin notes
+- `idea` and `warn` callout environments
+
+## Companion files
+
+- `CLAUDE.md` — book-level rules for working with Claude on this project
+- `decks/README.md` — pointers (not copies) to source decks
+- `correspondence/` — letters and email threads
+- `bibliography/__SLUG__.bib` — citation skeleton; run `/bibcheck` before chapter check-ins
+
+## Public version
+
+A free online version can be produced from this source via `tex4ht` or a Quarto pipeline once the print version is complete.

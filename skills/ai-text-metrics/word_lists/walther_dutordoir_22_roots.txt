@@ -1,0 +1,34 @@
+# Walther & Dutordoir (2025), Online Appendix Table A.2.
+# Stemmed root forms of words over-used by LLMs.
+# First 10 entries: their original "10-word list" (Google + ChatGPT searches).
+# All 22 entries: extended list including 12 from their colleague survey.
+# Match procedure (paper §2.2): lowercase -> strip punctuation -> Porter-stem -> count.
+#
+# NOTE: Three roots below differ from the printed paper. The printed Table A.2
+# has "nuanced" (row 1), "comphrens" (row 11), and "inric" (row 14), but
+# NLTK's PorterStemmer produces "nuanc", "comprehens", and "intric" from the
+# corresponding transformed words. We use the Porter-correct forms here so
+# that matching against a Porter-stemmed corpus actually works; "comphrens"
+# and "inric" appear to be transcription errors in the paper.
+nuanc
+delv
+unravel
+compel
+underpin
+pivot
+catalyst
+intertwin
+shed
+intrigu
+comprehens
+dive
+interplay
+intric
+lacuna
+meticul
+supercharg
+foster
+demystifi
+engag
+action
+underscor

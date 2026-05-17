@@ -1,0 +1,115 @@
+% =============================================================================
+% __SLUG__.sty — design system for "__TITLE__"
+% Memoir-based; Palatino body; Gov 2001 palette; voiced sidebar callouts.
+% =============================================================================
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{style/__SLUG__}[__DATE__ __TITLE__]
+
+% --- Fonts -------------------------------------------------------------------
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{mathpazo}        % Palatino body (math too)
+\RequirePackage{microtype}
+\setlength{\emergencystretch}{3em}     % loose lines beat overfull hboxes
+\flushbottom
+
+% --- Palette (reclaimed Gov 2001) -------------------------------------------
+\RequirePackage{xcolor}
+\definecolor{charcoal}{HTML}{2D3748}
+\definecolor{slate}{HTML}{4A5568}
+\definecolor{ocean}{HTML}{2B6CB0}
+\definecolor{forest}{HTML}{276749}
+\definecolor{crimson}{HTML}{A51C30}
+\definecolor{warmgray}{HTML}{718096}
+\definecolor{lightbg}{HTML}{F7FAFC}
+
+% --- Core packages -----------------------------------------------------------
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{graphicx}
+\graphicspath{{figures/}{substacks/}}
+\RequirePackage{booktabs}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\RequirePackage{enumitem}
+\setlist{itemsep=0.25em,topsep=0.35em}
+\RequirePackage[colorlinks=true,linkcolor=charcoal,urlcolor=ocean,citecolor=ocean]{hyperref}
+
+% --- Page geometry -----------------------------------------------------------
+\setstocksize{9.25in}{7.5in}
+\settrimmedsize{9.0in}{7.0in}{*}
+\setlrmarginsandblock{1.0in}{1.65in}{*}
+\setulmarginsandblock{1.0in}{1.4in}{*}
+\setmarginnotes{0.25in}{1.25in}{0.2in}
+\checkandfixthelayout
+
+% --- Chapter heads -----------------------------------------------------------
+\renewcommand{\chapnumfont}{\normalfont\Huge\bfseries\color{charcoal}}
+\renewcommand{\chaptitlefont}{\normalfont\LARGE\bfseries\color{charcoal}}
+\setlength{\beforechapskip}{20pt}
+\setlength{\midchapskip}{10pt}
+\setlength{\afterchapskip}{40pt}
+\setsecheadstyle{\normalfont\Large\bfseries\color{charcoal}}
+\setsubsecheadstyle{\normalfont\large\bfseries\color{slate}}
+
+% --- Voiced sidebar callouts -------------------------------------------------
+% \voice{Fisher}{...}, \voice{Skeptic}{...}, etc. Unknown voices fall to charcoal.
+\newcommand{\bookvoicecolor}[1]{%
+  \ifcsname bookvc#1\endcsname
+    \csname bookvc#1\endcsname
+  \else
+    charcoal%
+  \fi}
+
+\expandafter\def\csname bookvcFisher\endcsname{slate}
+\expandafter\def\csname bookvcRicardo\endcsname{warmgray}
+\expandafter\def\csname bookvcThompson\endcsname{warmgray}
+\expandafter\def\csname bookvcSkeptic\endcsname{charcoal}
+\expandafter\def\csname bookvcManager\endcsname{ocean}
+\expandafter\def\csname bookvcIC\endcsname{forest}
+\expandafter\def\csname bookvcVerifier\endcsname{crimson}
+\expandafter\def\csname bookvcGoldin\endcsname{ocean}
+\expandafter\def\csname bookvcKatz\endcsname{ocean}
+\expandafter\def\csname bookvcAutor\endcsname{ocean}
+\expandafter\def\csname bookvcAcemoglu\endcsname{ocean}
+\expandafter\def\csname bookvcSchumpeter\endcsname{warmgray}
+
+\newcommand{\voice}[2]{%
+  \begin{tcolorbox}[
+    enhanced,
+    colback=lightbg,
+    colframe=\bookvoicecolor{#1},
+    coltitle=white,
+    colbacktitle=\bookvoicecolor{#1},
+    fonttitle=\bfseries\small,
+    title={#1},
+    boxrule=0.4pt,
+    arc=2pt,
+    left=8pt,right=8pt,top=6pt,bottom=6pt,
+    breakable,
+    before skip=10pt, after skip=10pt
+  ]
+  \small\itshape #2
+  \end{tcolorbox}}
+
+\newcommand{\sidenote}[1]{\marginpar{\raggedright\footnotesize\color{slate} #1}}
+
+\newtcolorbox{idea}[1][]{
+  enhanced,
+  colback=lightbg, colframe=charcoal,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=charcoal,
+  title=Big idea, #1,
+  boxrule=0.4pt, arc=2pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,
+  breakable,
+  before skip=12pt, after skip=12pt}
+
+\newtcolorbox{warn}[1][]{
+  enhanced,
+  colback=lightbg, colframe=crimson,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=crimson,
+  title=Warning, #1,
+  boxrule=0.5pt, arc=2pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,
+  breakable,
+  before skip=12pt, after skip=12pt}

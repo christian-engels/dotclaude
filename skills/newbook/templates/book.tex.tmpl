@@ -1,0 +1,43 @@
+% !TEX program = pdflatex
+% =============================================================================
+% __TITLE__
+% __AUTHOR__
+% Working manuscript. Skeleton — not yet drafted.
+% =============================================================================
+\documentclass[11pt,openany]{memoir}
+
+\usepackage{style/__SLUG__}
+
+\usepackage[backend=biber,style=authoryear,sorting=nyt,natbib=true]{biblatex}
+\addbibresource{bibliography/__SLUG__.bib}
+
+\title{__TITLE__}
+\author{__AUTHOR__}
+\date{Draft of \today}
+
+\begin{document}
+
+\frontmatter
+\input{chapters/00_frontmatter}
+
+\mainmatter
+
+% Replace these \part headings with real ones once the book's three-section
+% structure is locked in. The default is one part per chapter range.
+\part{Part I}
+% __CHAPTER_INPUTS_PART1__
+
+\part{Part II}
+% __CHAPTER_INPUTS_PART2__
+
+\part{Part III}
+% __CHAPTER_INPUTS_PART3__
+
+\part*{Conclusion}
+\addcontentsline{toc}{part}{Conclusion}
+% \input{chapters/conclusion}    % uncomment when written
+
+\backmatter
+\printbibliography[heading=bibintoc,title={Bibliography}]
+
+\end{document}

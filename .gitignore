@@ -1,0 +1,18 @@
+# Allowlist: ignore everything by default, then un-ignore what we want to track.
+/*
+!/.gitignore
+!/README.md
+!/CLAUDE.md
+!/commands/
+!/skills/
+
+# Inside tracked dirs, drop OS/editor cruft and backups
+.DS_Store
+*.bak
+*.swp
+*~
+
+# Skill-local artifacts (source PDFs, split-pdf build dirs and extracts)
+*.pdf
+*_text.md
+*_build/

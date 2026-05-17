@@ -1,0 +1,43 @@
+# Wikipedia article "Signs of AI writing" — single words flagged as AI tells.
+# Source: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+# Literal lowercase match (like Liang-200). Common morphological forms enumerated.
+# Words already on Liang-200 ("valuable", "compelling") and WD-22 stems
+# (delv, dive, shed, underscor, foster, intric, meticul, intrigu) omitted.
+boast
+boasts
+boasted
+boasting
+bolster
+bolsters
+bolstered
+bolstering
+enduring
+enhance
+enhances
+enhanced
+enhancing
+exemplifies
+exemplify
+exemplified
+exemplifying
+garner
+garners
+garnered
+garnering
+groundbreaking
+highlight
+highlights
+highlighted
+highlighting
+nestle
+nestles
+nestled
+nestling
+renowned
+showcase
+showcases
+showcased
+showcasing
+tapestry
+tapestries
+vibrant

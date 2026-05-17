@@ -1,0 +1,17 @@
+# __DATE__ — Book scaffolded
+
+## What happened
+
+- Scaffolded `__SLUG__/` via `/newbook`.
+- `memoir`-based LaTeX with custom style at `style/__SLUG__.sty`. Palatino body, Gov 2001 palette, voiced-sidebar `\voice{<name>}{<text>}` macro, `idea` and `warn` callout environments.
+- Frontmatter + chapter stubs created. Each chapter has a TODO bullet list and one example voiced sidebar.
+- `bibliography/__SLUG__.bib` created empty. Run `/bibcheck` once entries exist.
+- `decks/README.md` created as a pointer template.
+
+## Next
+
+- Open `CLAUDE.md` and edit voice cast and lineage rules to fit this book.
+- Replace placeholder chapter titles in `chapters/`.
+- Fill the dedication and epigraph in `chapters/00_frontmatter.tex`.
+- Add real bibliography entries.
+- Run `pdflatex book.tex` and confirm clean compile.

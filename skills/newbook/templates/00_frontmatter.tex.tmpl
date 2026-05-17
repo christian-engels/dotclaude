@@ -1,0 +1,47 @@
+% =============================================================================
+% Frontmatter: title page, dedication slot, epigraph slot, preface stub
+% =============================================================================
+
+\thispagestyle{empty}
+\begin{center}
+\vspace*{2.5in}
+{\Huge\bfseries\color{charcoal} __TITLE__}\\[2.5cm]
+{\Large\color{slate} __AUTHOR__}\\[0.6cm]
+{\color{warmgray}\rule{4cm}{0.5pt}}\\[0.6cm]
+{\color{warmgray}\itshape draft of \today}
+\end{center}
+\clearpage
+
+% --- Dedication --------------------------------------------------------------
+\thispagestyle{empty}
+\vspace*{3in}
+\begin{flushright}
+{\itshape\large\color{slate}
+% TODO: replace with the dedication.
+For \dots}
+\end{flushright}
+\clearpage
+
+% --- Epigraph ----------------------------------------------------------------
+\thispagestyle{empty}
+\vspace*{2.5in}
+\begin{quote}
+\itshape\color{slate}
+% TODO: replace with the book's epigraph.
+``Quotation goes here.''
+\end{quote}
+\begin{flushright}
+\color{warmgray}— Author, \emph{Source} (Year)
+\end{flushright}
+\clearpage
+
+% --- Preface -----------------------------------------------------------------
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+% TODO: replace with the preface.
+\noindent The preface goes here. Open with the question the book is trying to answer, the audience it is written for, and what survives if specific tools and examples become dated.
+
+\clearpage
+\tableofcontents
+\clearpage
