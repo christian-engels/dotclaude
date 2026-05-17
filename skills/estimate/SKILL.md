@@ -1,6 +1,6 @@
 ---
 name: estimate
-description: Write or refactor estimation code (regressions, IVs, panel models, DiD / event studies, GMM) so it is human-readable and self-verifying. Use when writing or editing scripts that fit models — typically `04-estimate_*.R` or similar under `1-replication-pack/code/` or `4-things-we-tried/*/code/`, or when refactoring existing estimation code. Enforces explicit specifications (no formulae built from strings, no looped specs, no nested model calls), pre / execute / post verification for each estimator (OLS, FE panel, IV, DiD), and language guardrails (R fixest: explicit cluster always; Python pyfixest: explicit vcov; Stata: vce(cluster ...) always).
+description: Write or refactor estimation code (regressions, IVs, panel models, DiD / event studies, GMM) so it is human-readable and self-verifying. INVOKE BEFORE typing any of `lm`, `glm`, `feols`, `fixest::*`, `did_imputation`, `att_gt`, `pyfixest.feols`, `statsmodels.OLS/Logit`, Stata `reg`/`xtreg`/`reghdfe`/`ivreghdfe` in a `.R`/`.py`/`.do` file. Use when writing or editing scripts that fit models — typically `04-estimate_*.R` or similar under `1-replication-pack/code/` or `4-things-we-tried/*/code/`, or when refactoring existing estimation code. Enforces explicit specifications (no formulae built from strings, no looped specs, no nested model calls), pre / execute / post verification for each estimator (OLS, FE panel, IV, DiD), and language guardrails (R fixest: explicit cluster always; Python pyfixest: explicit vcov; Stata: vce(cluster ...) always).
 ---
 
 # Estimate
@@ -12,6 +12,21 @@ Write estimation code that a coauthor — or you in six months — can read line
 - Writing or editing scripts that fit statistical models (regressions, IVs, panels, DiD, event studies, GMM) under `1-replication-pack/code/` or `4-things-we-tried/*/code/`.
 - Refactoring estimation code that built specs from string concatenation or for-loops.
 - The user describes a model: "run this regression", "add firm FE", "instrument X with Z", "estimate the DiD".
+- **Self-trigger:** if you find yourself about to type `lm(`, `glm(`, `feols(`, `fixest::`, `did_imputation(`, `att_gt(`, `pyfixest.feols(`, `statsmodels.OLS(` / `.Logit(`, or Stata `reg`/`xtreg`/`reghdfe`/`ivreghdfe` in a `.R`/`.py`/`.do` file, **stop and invoke this skill before writing the line**. Do not rely on the user to remind you.
+
+## Mandatory first step on every invocation: audit the file
+
+Before writing or editing any estimation code in this file:
+
+1. Read the entire file end to end.
+2. List every existing violation:
+   - `as.formula(paste(...))` or any other string-built formula
+   - Generic model names (`m`, `m1`, `m2`, `mod`, `fit`, `result`, `res`, `out`, `output`, `bjs`, `m_fs`, `m_iv`)
+   - Loops constructing specifications
+   - Missing `summary(model)` / `print(model)` after a fit
+   - Implicit cluster (no `cluster =` arg on panel data; no `vcov = ` in pyfixest; no `vce(cluster ...)` in Stata)
+   - String-interpolated `vcov` / `cluster` args
+3. Refactor each before adding new code. The new code must not perpetuate existing violations. If the user asked for a small change, the refactor is part of the small change — do not scope the skill to "just the new lines."
 
 ## When NOT to use
 
@@ -26,13 +41,50 @@ Write estimation code that a coauthor — or you in six months — can read line
 
 ## Readability rules
 
-- **No formulae built from strings.** `as.formula(paste("y ~", paste(controls, collapse = " + ")))` → write the formula literally, or use `update()` from a base model.
+- **No formulae built from strings.** Always write the formula as a literal R/Python expression. The realistic trap is having a `CONTROL_COLS <- c("is_bank", "fee500_dum")` constant somewhere and being tempted to interpolate it — if a constant exists *only* to be pasted into a formula, delete it; it exists to enable the violation.
+
+  ```r
+  # WRONG (string-built, opaque to readers; hides the spec from search/grep)
+  CONTROL_COLS <- c("is_bank", "fee500_dum")
+  fmla <- as.formula(paste("y ~", paste(CONTROL_COLS, collapse = " + "),
+                           "| corridor + qdate"))
+  m <- feols(fmla, data = d, cluster = ~source_code)
+
+  # RIGHT (literal, self-documenting; greppable)
+  m_baseline_corridor_qdate <- feols(
+    y ~ is_bank + fee500_dum | corridor + qdate,
+    data    = d,
+    cluster = ~source_code
+  )
+
+  # RIGHT for many specs that share most of the formula — update() preserves
+  # literal-ness because the modification is visible:
+  m_base    <- feols(y ~ is_bank + fee500_dum | corridor + qdate,
+                     data = d, cluster = ~source_code)
+  m_firm_fe <- update(m_base, . ~ . | firm + qdate)
+  ```
+
+  Same rule applies to `did_imputation`'s `first_stage = ` argument and any other formula-taking interface — write the literal formula, never paste.
 - **No looping over specifications.** Don't iterate over a config to build a list of models. Each spec gets its own named line.
 - **No nested model calls.** `summary(feols(...))` is fine for a one-off check; for any stored model, assign first: `m1 <- feols(...); summary(m1)`.
 - **No magic strings in `vcov` / `cluster` args.** Use literal column names, not `paste0(...)` or `get()`.
 - **One model per assignment, name documents the spec.** Not `m1`, `m2`, `m3` — use `m_baseline`, `m_firm_fe`, `m_iv_distance`, etc.
 
+### Naming smells (never use these as model names)
+
+`m`, `m1`, `m2`, `m3`, `mod`, `model`, `fit`, `result`, `res`, `output`, `out`, `bjs`, `m_fs`, `m_iv`, `m_ols`. They tell a reader nothing about what was estimated. A good name compresses *what the model is* into 3–5 underscore-separated tokens:
+
+```
+m_<estimator>_<fe-shorthand>_<variant>
+```
+
+Examples: `m_baseline_corridor_qdate`, `bjs_firm_qdate_anticipated`, `m_iv_distance_first_stage`, `m_event_twoway_no_anticipation`. If your name is shorter than three tokens, you are probably hiding a spec choice — add the FE and the variant.
+
+Before saving the file, re-read every model name. If any are on the smells list, rename before continuing.
+
 ## Pre / execute / post for common estimators
+
+**Hard rule before the examples below:** every fitted model must be followed by `summary(model)` — or `print(model)` / the package equivalent (`didimputation::did_imputation` returns a tibble — `print()` it; `pyfixest` models use `.summary()`; Stata: `estimates table` after `estimates store`). Custom `cat()` lines printing individual stats (R², N, one coefficient) do NOT substitute. The full coefficient table belongs in the run log so the user can read signs, magnitudes, SEs, and stars without re-running.
 
 ### OLS
 
@@ -134,7 +186,7 @@ iplot(m_event)   # save to _outputs/figures/event_study.pdf
 - **`cluster = ~var` always.** Never omit; default iid SEs are almost never right for panel/grouped data.
 - **Multiple FE: `feols(y ~ x | fe1 + fe2, data)`** — explicit pipe syntax, not `+ factor(fe1) + factor(fe2)`.
 - **Weights: `weights = ~weight_var`** — explicit; print weighted N afterwards.
-- **Save fitted models** to `_outputs/intermediate/` with `saveRDS()`, named after the spec.
+- **Save fitted models** to `_outputs/intermediate/` with `saveRDS()`, named after the spec. *Exception:* figure-only scripts (`03-fig_*.R`) whose model objects are consumed inline to draw a single plot and never reused — do not save these; note in a one-line comment that the model is figure-local.
 - **For tables in `04-table_*.R`**: `modelsummary` or `fixest::etable` — but that's the *next* script, not this one.
 
 ### Python (pyfixest)
@@ -147,6 +199,21 @@ iplot(m_event)   # save to _outputs/figures/event_study.pdf
 - `reghdfe` for FE; `vce(cluster X)` always explicit.
 - `ivreghdfe` for IV + FE; report first-stage F via `weakivtest` or equivalent.
 - `estimates store` for downstream table building.
+
+## Warnings worth investigating (do not silence)
+
+Estimation packages emit warnings that are real diagnostic signals about identification, conditioning, or specification. Note them in the user-facing summary AND attempt a diagnosis — do not move on after a one-line acknowledgement.
+
+| Warning (R / Python) | Likely cause | First diagnostic step |
+|---|---|---|
+| `The VCOV matrix is not positive semi-definite and was 'fixed'` (`didimputation`, `fixest`) | Ill-conditioning at the cluster × FE interaction; collinear controls; singleton-treated cells | Tabulate treated cells per cluster; check rank of the control matrix within each FE bin; consider a coarser cluster |
+| `Convergence issue` / `Algorithm did not converge` (`feols`, `glm`) | Sparse FE structure; perfect prediction; collinear instruments | Drop singletons explicitly (`fixest::feols(..., fixef.rm = "both")`); inspect the FE crossing |
+| `First-stage F < 10` (any IV) | Weak instrument | Report Anderson–Rubin CI; consider weak-IV-robust inference (`fixest::iv_AR`); reconsider the instrument |
+| `Singletons absorbed: N` (`fixest`) | Within-FE clusters with one observation | Confirm intent; if N is large relative to sample, the FE is too granular |
+| `NaN standard errors` | Negative diagonal in the SE matrix; degenerate cluster | Switch cluster level; check for treated-cell singletons |
+| `dropped because of collinearity` (`fixest`, `lfe`) | Linear dependence among regressors or FE | Inspect which variable was dropped; if it's a control of interest, the spec is wrong |
+
+If a warning fires and you cannot diagnose it in one pass, surface it to the user with the diagnostic step you tried — do not let it stay in the log unaddressed.
 
 ## Script skeleton (R, for `1-replication-pack/code/`)
 
