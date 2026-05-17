@@ -65,6 +65,10 @@ Archive rather than delete: `git log` doesn't surface *why* a trial was abandone
 
 **Slide decks**: When asked to construct a slide deck, invoke the `beautiful_deck` skill.
 
+**Wrangling data**: When writing or editing data-wrangling code (joins, filters, mutates, pivots, aggregations, type coercions) under `1-replication-pack/code/` or `4-things-we-tried/*/code/`, invoke the `wrangle` skill.
+
+**Estimating models**: When writing or editing estimation code (regressions, IVs, panel models, DiD/event studies) under the same paths, invoke the `estimate` skill.
+
 ## Using Python, R and Stata
 
 Never use global package installations except for Stata. It is fine to combine R and Python in a single project — `renv` and `uv` coexist happily in one directory.
@@ -87,6 +91,7 @@ Before writing any code to disk, use available MCP servers (e.g., filesystem, du
 
 ## How Claude Should Work
 
+- **Pre-verify → execute → post-verify, every time.** Before changing state — files, code, data, git history — check the inputs. Execute. Verify the outputs match expectations. Don't trust silent success. For data work, this discipline is encoded in the `wrangle` and `estimate` skills; outside data work it still applies (read before edit, `git status` before commit, dry-run before destructive operation, etc.).
 - **No guessing.** If a specification is unclear, ask before proceeding.
 - **Always display the full regression or summary table** so the exact specification is visible.
 - **View figures** through image capabilities so we can discuss them.
