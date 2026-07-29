@@ -1,68 +1,27 @@
-# Claude Code: Skills and Commands
+# dotclaude
 
-Personal collection of Claude Code skills and slash commands for empirical research in finance and economics.
+Personal Claude Code configuration: global instructions (`CLAUDE.md`), slash commands, four personal skills, and tracked symlinks that wire the shared skills in from the private [claude-plugins](https://github.com/christian-engels/claude-plugins) marketplace repo.
 
-## Install
+## Layout
 
-Skills and slash commands are loaded by Claude Code from your user-scoped config directory:
+- `CLAUDE.md` — user-scoped global instructions loaded every session. Opinionated for empirical finance/economics research; adapt before adopting.
+- `commands/` — slash commands (`compiletex`, `new-session`).
+- `skills/` — four personal skills as real directories (`lattice`, `create-quiz`, `newbook`, `voice-extractor`) plus 24 tracked symlinks into `~/claude-plugins/plugins/*/skills/*`.
 
-| OS | Path |
-|---|---|
-| macOS / Linux | `~/.claude/` |
-| Windows | `%USERPROFILE%\.claude\` (i.e. `C:\Users\<you>\.claude\`) |
+## Machine bootstrap (mine)
 
-Clone into that directory:
+Order matters — the skill symlinks point at `~/claude-plugins`, so clone that first:
 
 ```bash
-# macOS / Linux
-git clone https://github.com/christian-engels/dotclaude.git ~/.claude-dotclaude
-cp -R ~/.claude-dotclaude/skills/* ~/.claude/skills/
-cp -R ~/.claude-dotclaude/commands/* ~/.claude/commands/
+git clone git@github.com:christian-engels/claude-plugins.git ~/claude-plugins
+# then clone or pull this repo as ~/.claude
+~/claude-plugins/install-local.sh   # links the Scopus corpus, lists missing .env files
 ```
 
-```powershell
-# Windows (PowerShell)
-git clone https://github.com/christian-engels/dotclaude.git "$env:USERPROFILE\.claude-dotclaude"
-Copy-Item "$env:USERPROFILE\.claude-dotclaude\skills\*" "$env:USERPROFILE\.claude\skills\" -Recurse
-Copy-Item "$env:USERPROFILE\.claude-dotclaude\commands\*" "$env:USERPROFILE\.claude\commands\" -Recurse
-```
+## Sharing
 
-Or, if you don't already have a `~/.claude/` you want to keep, clone directly into it. Restart Claude Code so it picks up the new skills and commands.
+Shared skills are distributed through the private claude-plugins marketplace, not by copying this repo — see its README for the coauthor install (`/plugin marketplace add christian-engels/claude-plugins`, then `/plugin install <bundle>@engels`).
 
-## Skills
+## Provenance
 
-### My own
-
-- [`ai-text-detect`](skills/ai-text-detect) — locate every LLM-cliché word in a .tex/.pdf/.txt with sentence context
-- [`ai-text-metrics`](skills/ai-text-metrics) — readability and AI-style linguistic metrics for academic drafts
-- [`ai-text-verify-refs`](skills/ai-text-verify-refs) — verify references via Web of Science → Scopus → OpenAlex cascade
-- [`ai-text-writing`](skills/ai-text-writing) — draft academic prose in Cochrane/Jacobsen style, avoiding LLM markers
-
-### From [scunning1975/MixtapeTools](https://github.com/scunning1975/MixtapeTools)
-
-- [`beautiful_deck`](skills/beautiful_deck) — end-to-end Beamer deck creation
-- [`bibcheck`](skills/bibcheck) — many-agent bibliography audit
-- [`blindspot`](skills/blindspot) — peripheral vision audit for empirical output
-- [`check-section-numbers`](skills/check-section-numbers) — verify prose matches referenced tables/figures
-- [`compiledeck`](skills/compiledeck) — compile Beamer presentations
-- [`newbook`](skills/newbook) — scaffold a new book project
-- [`newproject`](skills/newproject) — scaffold a new research project
-- [`referee2`](skills/referee2) — systematic audit by Referee 2 (deck or code mode)
-- [`split-pdf`](skills/split-pdf) — read academic PDFs in chunks
-- [`tikz`](skills/tikz) — visual-collision check for TikZ and rendered figures
-
-### From [grandamenium/dream-skill](https://github.com/grandamenium/dream-skill)
-
-- [`dream`](skills/dream) — memory consolidation; auto-triggers via a Stop hook every 24h
-
-See each skill's `SKILL.md` for full usage notes.
-
-## Commands
-
-Slash commands live in [`commands/`](commands).
-
-## Global instructions
-
-[`CLAUDE.md`](CLAUDE.md) is the user-scoped instructions file Claude Code loads every session. The copy in this repo is tailored to empirical finance/economics research — folder conventions (replication-pack ↔ paper one-way flow), workflow rules (single source of truth for numbers vs. presentation, iteration discipline), behaviour rules (no guessing, always show full tables, report output paths), and version-control discipline (lab-book commits, squash-merge, no `Co-Authored-By` lines). Opinionated; adapt before adopting.
-
-The install commands above do **not** copy `CLAUDE.md` to avoid overwriting your existing global instructions. Copy it manually if you want the whole thing, or open it and merge the parts that fit your workflow.
+`newbook` derives from [scunning1975/MixtapeTools](https://github.com/scunning1975/MixtapeTools). Skills in the marketplace bundles carry their provenance in their own `SKILL.md` files.
