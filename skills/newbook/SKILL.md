@@ -1,6 +1,6 @@
 ---
 name: newbook
-description: Scaffold a new book project — folders, memoir-based LaTeX skeleton, custom style with voiced sidebars, bibliography stub, CLAUDE.md, README, and a chapter-per-file structure that converts cleanly to HTML later. Use at the start of a book project to get a compileable skeleton in one step. Parallel to /newproject and /bibcheck.
+description: Scaffold a new book project — folders, memoir-based LaTeX skeleton, custom style with voiced sidebars, bibliography stub, CLAUDE.md, README, and a chapter-per-file structure that converts cleanly to HTML later. Use at the start of a book project to get a compileable skeleton in one step. Parallel to /bibcheck.
 allowed-tools: Bash(mkdir*), Bash(cp*), Bash(ls*), Bash(pdflatex*), Bash(touch*), Read, Write, Edit
 argument-hint: '[book-slug] [optional --title="Title"] [optional --chapters=N]'
 ---
